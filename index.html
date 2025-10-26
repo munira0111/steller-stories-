@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar Stories</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0D1117;
+            color: #C9D1D9;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .active-view {
+            display: block;
+        }
+
+        .hero-bg {
+            background-image: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2071&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .nav-link.active {
+            color: #58A6FF;
+        }
+
+        .loader {
+            border-top: 4px solid #3b82f6;
+            border-right: 4px solid transparent;
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+    <header class="bg-gray-900/80 backdrop-blur-sm text-white sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="text-2xl font-bold text-white">Stellar Stories</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#home" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300">Home</a>
+                <a href="#stories"
+                    class="nav-link text-lg hover:text-blue-400 transition-colors duration-300">Stories</a>
+                <!-- NEW: Data Link -->
+                <a href="#data" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300">Space
+                    Data</a>
+                <a href="#about" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300">About</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-800">
+            <a href="#home" class="block text-center py-2 px-4 text-sm text-white hover:bg-gray-700">Home</a>
+            <a href="#stories" class="block text-center py-2 px-4 text-sm text-white hover:bg-gray-700">Stories</a>
+            <!-- NEW: Data Link Mobile -->
+            <a href="#data" class="block text-center py-2 px-4 text-sm text-white hover:bg-gray-700">Space Data</a>
+            <a href="#about" class="block text-center py-2 px-4 text-sm text-white hover:bg-gray-700">About</a>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- Home View -->
+        <div id="home-view" class="view">
+            <section
+                class="hero-bg relative h-[calc(100vh-68px)] flex items-center justify-center text-center text-white">
+                <div class="absolute inset-0 bg-black/60"></div>
+                <div class="relative z-10 p-4">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-4 animate-fade-in-down">Stellar Stories</h1>
+                    <p class="text-lg md:text-xl max-w-3xl mx-auto mb-8 animate-fade-in-up">We are sharing stories of
+                        how space weather affects people on Earth. These stories use imagination and science to help
+                        children and the public learn in fun ways.</p>
+                    <a href="#stories"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform duration-300 transform hover:scale-105">Read
+                        Stories</a>
+                    <!-- Fun Fact Button -->
+                    <div id="fun-fact-container" class="mt-6">
+                        <button id="show-fact-btn"
+                            class="bg-yellow-400 text-gray-900 font-bold px-6 py-3 rounded-lg hover:bg-yellow-300 transition">
+                            Show a Fun Fact 🌟
+                        </button>
+                        <p id="fun-fact-text" class="mt-4 text-yellow-200 text-lg"></p>
+                    </div>
+                </div>
+
+        </div>
+        </section>
+        </div>
+
+        <!-- Stories Grid View -->
+        <div id="stories-view" class="view">
+            <section class="container mx-auto px-6 py-12">
+                <h1 class="text-3xl md:text-4xl font-bold text-center mb-10">A Collection of Stellar Stories</h1>
+                <div id="stories-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+            </section>
+        </div>
+
+        <!-- Story Detail View -->
+        <div id="story-detail-view" class="view">
+            <section class="container mx-auto px-6 py-12 max-w-4xl">
+                <div id="story-detail-content" class="bg-gray-800 rounded-lg p-6 md:p-10 shadow-lg">
+                </div>
+                <div id="story-navigation" class="flex justify-between items-center mt-8">
+                </div>
+            </section>
+        </div>
+
+        <!-- NEW: Space Data View (Solar Flare & APOD) -->
+        <div id="data-view" class="view">
+            <section class="container mx-auto px-6 py-12">
+                <h1 class="text-3xl md:text-4xl font-bold text-center mb-10 text-white">Live Space Weather & Astronomy
+                    Data</h1>
+
+                <!-- Solar Flare Data Box -->
+                <div id="flare-data"
+                    class="bg-gray-800 rounded-xl p-6 md:p-8 shadow-xl mb-12 border-l-4 border-yellow-500">
+                    <h2 class="text-2xl font-semibold mb-4 text-yellow-400 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                        Latest Solar Flare Report
+                    </h2>
+                    <div class="flex justify-center items-center h-24">
+                        <div class="loader-placeholder text-lg text-gray-400">Loading solar data...</div>
+                    </div>
+                </div>
+
+                <!-- APOD (Astronomy Picture of the Day) -->
+                <div id="apod-content" class="bg-gray-800 rounded-xl p-6 md:p-8 shadow-xl border-t-4 border-blue-500">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-400 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.97l-1.954-.42a6 6 0 00-4.745-2.735z"></path>
+                        </svg>
+                        Astronomy Picture of the Day
+                    </h2>
+                    <div class="flex justify-center items-center h-48">
+                        <div class="loader-placeholder text-lg text-gray-400">Fetching APOD...</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- About View -->
+        <div id="about-view" class="view">
+            <section class="container mx-auto px-6 py-12 max-w-4xl">
+                <div class="bg-gray-800 rounded-lg p-6 md:p-10 shadow-lg">
+                    <h1 class="text-3xl md:text-4xl font-bold text-center mb-6">About This Project</h1>
+                    <div class="space-y-4 text-lg text-gray-300">
+                        <p>This web application was created for the <strong class="text-white">NASA Space Apps Challenge
+                                2025</strong> under the challenge: <strong class="text-white">"Stellar Stories: Space
+                                Weather Through the Eyes of Earthlings."</strong></p>
+                        <p>The goal of this project is to make the complex topic of space weather accessible to a
+                            general audience, especially children, through the use of imaginative and relatable stories.
+                        </p>
+                        <p>We believe that by transforming scientific concepts into narrative, we can inspire the next
+                            generation of space explorers and scientists.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Share Your Story Section -->
+        <div
+            class="bg-green-100/80 text-green-900 rounded-xl shadow-lg p-6 mt-8 max-w-xl mx-auto flex flex-col items-center">
+            <h2 class="text-2xl font-bold mb-2">🌟 Share Your Space Story!</h2>
+            <p class="mb-4 text-lg">Have a fun or inspiring story about space weather? Click below to email us your
+                story. <br>After you send it, our team will verify and upload your story to the Stellar Stories webapp
+                for everyone to read!</p>
+            <a href="mailto:stellerStories2025@gmail.com?subject=My Space Story for Stellar Stories"
+                class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform duration-300 transform hover:scale-105">
+                Share My Story
+            </a>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900 text-center py-6">
+        <p class="text-gray-400">&copy; Project Stellar Stories. By CRAZYY_5.</p>
+        <p class="text-gray-400">A NASA Space Apps Challenge 2025 Project.</p>
+    </footer>
+
+    <script>
+        // NASA API Key provided by the user
+        const NASA_API_KEY = "s8i49MBP10XaQ1YhrYnkZdMXJjgcC6ZrHq36S2vA";
+
+        // --- Data for Stories (Unchanged) ---
+        const storiesData = [
+            {
+                "id": 1,
+                "title": "What is Space Storm",
+                "excerpt": "High above the clouds, where rockets like to play, the Sun was getting ready for a parade...",
+                "content": [
+                    "High above the clouds, where rockets like to play, the Sun was getting ready for a parade. But this wasn’t an ordinary parade with drums and balloons—it was the Space Weather Parade!",
+                    "The Sun called his friends:",
+                    "Sunny the Sunshine 🌞, who loved to brighten everyone’s day.",
+                    "Stormy the Solar Flare ⚡, who liked to jump around with sparks of light.",
+                    "Windy the Solar Wind 💨, who whooshed through space carrying tiny invisible particles.",
+                    "Together, they began their noisy, glittery parade toward Earth.",
+                    "Down on Earth, little Mira was playing outside with her kite. Suddenly, she noticed something strange—her dad’s GPS in the car said they were “in the middle of the ocean!” (even though they were just near the market!). The TV at home blinked and froze, and Mira’s tablet stopped loading cartoons.",
+                    "“What’s happening?” Mira asked.",
+                    "Just then, she imagined she could hear Windy the Solar Wind whisper:“Don’t worry, Mira, it’s just us—the Sun’s space weather parade! We love to visit Earth, but sometimes we make signals wobbly, lights flicker, and machines get confused.”",
+                    "Mira giggled. “So you’re like pranksters from the sky?”",
+                    "Stormy the Solar Flare sparkled:“Exactly! But we don’t mean harm. Earth’s magnetic shield is like a big umbrella, keeping you safe. We just make some mischief along the way!”",
+                    "That night, Mira looked up at the sky and gasped. She saw glowing green and purple lights dancing above—the auroras, the grand finale of the Sun’s parade.",
+                    "She whispered:“Space weather isn’t scary… it’s like magic from the Sun!”",
+                    "And from then on, whenever the internet lagged or the TV froze, Mira smiled, knowing the Sun and its friends were just having another parade in the sky."
+                ],
+                "imagePaths": [
+                    "https://d18x2uyjeekruj.cloudfront.net/wp-content/uploads/2021/09/sost.jpg",
+                    "https://static.scientificamerican.com/dam/m/27308d3522489ab3/original/2X5P7NP.jpg?m=1716317877.88&w=1200"
+                ],
+                "credits": ""
+            },
+            {
+                "id": 2,
+                "title": "Muna and Flarius the Solar Flare",
+                "excerpt": "There was a little girl named Muna. Her daddy was an astronaut...",
+                "content": [
+                    "Once Upon a Time…",
+                    "There was a little girl named Muna. Her daddy was an astronaut. He loved the stars, the Moon, and the Sun.",
+                    "Before he left for his space trip, he held Muna’s hand and said: “Sweetheart, the Sun is very powerful. It gives us light and warmth, but sometimes it sends out storms into space. We call that space weather.”",
+                    "Muna didn’t really understand, but she hugged him tight and said,“Come back soon, Daddy.”",
+                    "The Day Everything Changed. Far away, the Sun grew restless. It let out a big, bright burst of energy called a solar flare.",
+                    "What’s a solar flare? It’s like the Sun sneezing really loudly—except instead of air, it sends out light and energy racing through space.",
+                    "This flare had a name: Flarius. Flarius was fiery and excited. He shouted,“Look at me! I will shine across the universe!”",
+                    "But Flarius was so strong that when he zoomed past Earth, he made radios stop working, satellites get confused, and GPS signals go all wrong.",
+                    "That night, Muna’s daddy’s spaceship lost contact. He couldn’t talk to Earth anymore. Muna waited and waited… but Daddy never came back.",
+                    "Muna Grows Up. Muna’s heart was sad, but she wanted to understand what had happened. So she studied the Sun.",
+                    "She learned that space weather is what happens when the Sun sends out things like: Solar flares (like Flarius), CMEs (giant bubbles of gas), and solar wind (streams of tiny particles).",
+                    "She also learned that solar flares are classified by how strong they are: A-class (weakest), B-class, C-class, M-class, and X-class (strongest).",
+                    "Sometimes space weather makes lights go out, makes airplanes lose radio, makes astronauts unsafe, but also creates auroras.",
+                    "Muna thought:“The Sun isn’t bad. It just doesn’t know how strong it is.”",
+                    "The Lonely Flare. One night, while looking at the stars, Muna imagined she heard a soft voice. It was Flarius.",
+                    "“Muna… I didn’t mean to hurt anyone. I only wanted to shine. I didn’t know your daddy’s ship would lose signal because of me.”",
+                    "Muna wiped a tear and whispered,“I know, Flarius. You’re not bad. You’re just powerful. Maybe too powerful sometimes.”",
+                    "Flarius glowed gently in the sky. For the first time, he didn’t feel so lonely.",
+                    "A New Hope. From that day, Muna decided to help others. She worked with scientists to watch the Sun and predict space weather.",
+                    "Now, astronauts, pilots, and even farmers using GPS could be safe from big solar storms.",
+                    "And whenever she saw the northern lights dancing, Muna smiled and thought:“Daddy, I couldn’t bring you back… but I can keep others safe. And maybe you’re watching those lights with me.”",
+                    "Far away, Flarius sparkled softly, happy that someone finally understood him.",
+                    "✨ Moral : The Sun is our friend. It gives us life, light, and warmth. But sometimes, its storms—called space weather—can cause problems. By learning and studying, we can stay safe. And like Muna, we can turn sadness into hope."
+                ],
+                "displayType": "comic",
+                "imagePaths": [
+                    "https://github.com/anisur06/StellarStories/blob/main/Gemini_Generated_Image_sbbisdsbbisdsbbi.png?raw=true",
+                    "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/07/SOHO_20151202_1600.jpg?w=1024&h=723&fit=crop&crop=faces%2Cfocalpoint"
+                ],
+                "credits": ""
+            },
+            {
+                "id": 3,
+                "title": "The Night the Lights Slept",
+                "excerpt": "Once in Quebec, Canada, the people were going about their daily lives...",
+                "content": [
+                    "Once in Quebec, Canada, the people were going about their daily lives. It was a cold winter evening, and children were playing in the snow while families prepared warm dinners.",
+                    "Far, far away, on the Sun, a giant burst of energy named Lumi woke up. Lumi was a playful solar flare, full of sparkling light and electric energy. “I want to travel far!” Lumi shouted, bouncing across space toward Earth.",
+                    "As Lumi raced toward the planet, she didn’t mean any harm, but she carried so much energy that when she reached Earth, her invisible waves brushed against the power lines and electrical grids.",
+                    "What does that mean? Imagine the power lines were like long, twisty slides carrying invisible electrons, which are tiny energy travelers. Lumi’s solar energy made the electrons jump and spin wildly, like children running in all directions on a playground. The electricity couldn’t flow normally anymore, and suddenly… POOF! The lights went out across the entire province!",
+                    "Families were surprised. Candles flickered in windows, and people huddled together to stay warm. Workers rushed to the power stations to see what happened. Scientists looked at their monitors and realized it wasn’t broken machines—it was Lumi’s solar storm!",
+                    "Even though the Sun is millions of miles away, its storms could reach Earth and make electricity sleep for a while. From that day, the children in Quebec learned something amazing: the Sun could play pranks on Earth, but scientists were working hard to watch for Lumi and her friends, so they could warn everyone in time.",
+                    "✨ Lesson: Electricity is like a busy highway for tiny electrons. Solar storms can shake that highway and make electricity stop for a while. But by studying the Sun and space weather, humans can protect themselves and keep the lights shining."
+                ],
+                "imagePaths": [
+                    "https://github.com/anisur06/StellarStories/blob/main/story3.png?raw=true"
+                ],
+                "credits": ""
+            },
+            {
+                "id": 4,
+                "title": "Rafiq and the Strange Signals",
+                "excerpt": "Rafiq was a farmer in a small village. He loved using his new tractor with GPS...",
+                "content": [
+                    "Rafiq was a farmer in a small village. He loved using his new tractor with GPS to guide him through his fields. He also had an irrigation system that worked with a digital timer and moisture sensors, and a drone he sometimes used to check his crops from above.",
+                    "One day, as he was working, strange things began to happen. His GPS screen jumped and spun, telling him to turn left when he should have gone straight. The irrigation system turned on at the wrong time, and the drone’s camera feed became fuzzy and jerky. Confused, Rafiq parked his tractor and looked up at the sky.",
+                    "That night, he heard from the village teacher that the Sun had released a big storm—a solar flare followed by a coronal mass ejection—and it had shaken the signals from space.",
+                    "Rafiq learned that these invisible waves from the Sun could: Disrupt GPS signals, Interfere with wireless sensors, and Affect drones and other electronics.",
+                    "From then on, Rafiq took a greater interest in space weather forecasts. He realized that just like rain or sunshine, space weather could change the way he lived and worked on Earth. By checking forecasts, he could now plan his fieldwork safely, avoiding problems when the Sun sent out its invisible storms.",
+                    "✨ Lesson: Even things that seem magical, like GPS tractors or drones, rely on signals from space. Solar storms can shake those signals, but by learning about space weather, people can stay safe and keep their tools working properly."
+                ],
+                "imagePaths": [
+                    "https://github.com/anisur06/StellarStories/blob/main/story4.png?raw=true"
+                ],
+                "credits": ""
+            },
+            {
+                "id": 5,
+                "title": "The Astronauts’ Alert",
+                "excerpt": "In 2003, astronauts aboard the International Space Station (ISS) were busy with their daily work...",
+                "content": [
+                    "In 2003, astronauts aboard the International Space Station (ISS) were busy with their daily work, floating in zero gravity, checking experiments, and looking at Earth from above.",
+                    "Suddenly, they received an urgent message from mission control: a powerful solar storm was on its way.",
+                    "The astronauts had to move to the safest part of the station, a special room with thick walls called shielding, which could protect them from the harmful radiation carried by the storm.",
+                    "But why was it dangerous? The Sun’s solar storm sent out charged particles—tiny pieces of energy that travel faster than a speeding rocket. These particles can: Harm astronauts directly, mess with satellites and electronics, and disturb communication.",
+                    "Outside, the Earth’s magnetic field blocked some of the storm, protecting people and technology below, but in space, the astronauts were more exposed.",
+                    "They waited together, calm but cautious, until the storm passed. When it was safe again, they looked out of the station windows and saw the auroras shimmering far below, stretching over the North and South Poles.",
+                    "✨ Lesson: In space, the Sun can send invisible energy that is too strong for humans and machines to handle safely. Scientists and astronauts use special shields and monitoring systems to stay protected, showing that with careful preparation, we can explore even the most challenging environments safely."
+                ],
+                "imagePaths": [
+                    "https://github.com/anisur06/StellarStories/blob/main/story5.png?raw=true"
+                ],
+                "credits": ""
+            },
+            {
+                "id": 6,
+                "title": "Arif and the Day the Computers Got Confused",
+                "excerpt": "Arif was a curious 12-year-old student who loved learning about science...",
+                "content": [
+                    "Arif was a curious 12-year-old student who loved learning about science. His school had a special computer lab, and he spent hours typing reports, watching science videos, and even running small experiments online.",
+                    "One morning, Arif and his classmates were excited to use the computers for a big project. But suddenly, the screens flickered. Some computers froze, while others typed letters by themselves. The projector showed the wrong slides, and even the school Wi-Fi became slow and jumpy.",
+                    "Confused, Arif looked out of the window and noticed the northern lights glowing brightly in the sky. That’s when the science teacher explained:",
+                    "“The Sun sent out a solar storm last night! It’s called space weather, and sometimes it can disturb electronics and communication signals.”",
+                    "Arif learned that solar storms can affect Wi-Fi, computers, and GPS.",
+                    "Arif realized that space weather was like an invisible teacher reminding everyone that the Sun was powerful. It could affect even the small things in daily life, like school computers.",
+                    "From that day, Arif decided to study the Sun and space weather more carefully. He even created a small project for his class explaining how solar storms can reach Earth and affect people everywhere.",
+                    "✨ Lesson for Kids: The Sun’s storms can travel all the way to Earth and make our electronics behave strangely. By learning about space weather, students like Arif can stay prepared, understand the science, and even use it as inspiration for new ideas."
+                ],
+                "imagePaths": [
+                    "https://github.com/anisur06/StellarStories/blob/main/story6.png?raw=true"
+                ],
+                "credits": ""
+            },
+            {
+                "id": 100,
+                "title": "Cosmic Comic",
+                "excerpt": "A visual journey through space weather and cosmic wonders!",
+                "content": [
+                    "Enjoy this special comic strip that shows the wonder of space weather and cosmic events!"
+                ],
+                "imagePaths": [
+                    "https://github.com/anisur06/StellarStories/blob/main/c1.jpg?raw=true",
+                    "https://github.com/anisur06/StellarStories/blob/main/c2.jpg?raw=true",
+                    "https://github.com/anisur06/StellarStories/blob/main/c3.jpg?raw=true",
+                    "https://github.com/anisur06/StellarStories/blob/main/c4.jpg?raw=true",
+                    "https://github.com/anisur06/StellarStories/blob/main/c5.jpg?raw=true",
+                    "https://github.com/anisur06/StellarStories/blob/main/c6.jpg?raw=true",
+                    "https://github.com/anisur06/StellarStories/blob/main/c7.jpg?raw=true",
+                    "https://github.com/anisur06/StellarStories/blob/main/c8.jpg?raw=true"
+                ],
+                "credits": ""
+            }
+        ];
+
+        // --- API Helper Functions ---
+
+        /** Formats a Date object into YYYY-MM-DD string */
+        function formatDate(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        /** Fetches and renders the Astronomy Picture of the Day (APOD) */
+        async function fetchAPOD() {
+            const container = document.getElementById('apod-content');
+            const loaderHtml = `
+                <div class="flex flex-col items-center justify-center h-48">
+                    <div class="loader mb-2"></div>
+                    <p class="text-sm text-gray-400">Fetching cosmic beauty...</p>
+                </div>
+            `;
+            container.innerHTML = `<h2 class="text-2xl font-semibold mb-4 text-blue-400 flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.97l-1.954-.42a6 6 0 00-4.745-2.735z"></path></svg>
+                Astronomy Picture of the Day
+            </h2>${loaderHtml}`;
+
+            try {
+                const url = `https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+
+                let mediaHtml;
+                if (data.media_type === 'video') {
+                    mediaHtml = `
+                        <iframe 
+                            src="${data.url}" 
+                            frameborder="0" 
+                            allowfullscreen 
+                            class="w-full rounded-lg shadow-xl"
+                            style="aspect-ratio: 16 / 9; max-height: 500px;">
+                        </iframe>
+                    `;
+                } else {
+                    mediaHtml = `
+                        <img 
+                            src="${data.url}" 
+                            alt="${data.title}" 
+                            class="w-full rounded-lg shadow-xl object-cover h-auto"
+                            onerror="this.onerror=null;this.src='${data.hdurl || 'https://placehold.co/600x400/1F2937/9CA3AF?text=Image+Unavailable'}';"
+                        >
+                    `;
+                }
+
+                container.innerHTML = `
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-400 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.97l-1.954-.42a6 6 0 00-4.745-2.735z"></path></svg>
+                        Astronomy Picture of the Day
+                    </h2>
+                    <h3 class="text-xl font-bold text-white mb-3">${data.title}</h3>
+                    <p class="text-sm text-gray-500 mb-4">Date: ${data.date} | Credit: ${data.copyright || 'NASA'}</p>
+                    ${mediaHtml}
+                    <p class="text-gray-300 mt-4 text-md">${data.explanation}</p>
+                `;
+
+            } catch (error) {
+                console.error('Error fetching APOD:', error);
+                container.innerHTML = `<p class="text-red-400">Failed to load APOD data. Please try again later.</p>`;
+            }
+        }
+
+        /** Fetches and renders the latest Solar Flare from DONKI */
+        async function fetchLatestFlare() {
+            const container = document.getElementById('flare-data');
+            const today = new Date();
+            const yesterday = new Date();
+            yesterday.setDate(today.getDate() - 1); // Get flares from the last 24 hours
+
+            const startDate = formatDate(yesterday);
+            const endDate = formatDate(today);
+
+            const loaderHtml = `
+                <div class="flex flex-col items-center justify-center h-24">
+                    <div class="loader mb-2"></div>
+                    <p class="text-sm text-gray-400">Checking for solar flares...</p>
+                </div>
+            `;
+            container.innerHTML = `<h2 class="text-2xl font-semibold mb-4 text-yellow-400 flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Latest Solar Flare Report
+            </h2>${loaderHtml}`;
+
+            try {
+                const url = `https://api.nasa.gov/DONKI/FLR?startDate=${startDate}&endDate=${endDate}&api_key=${NASA_API_KEY}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+
+                // DONKI returns flares sorted by end time, so the first one is the latest (if available)
+                const latestFlare = data.length > 0 ? data[data.length - 1] : null;
+
+                if (latestFlare) {
+                    const peakTime = new Date(latestFlare.peakTime).toLocaleString();
+                    const classification = latestFlare.classType;
+
+                    // Determine color based on classification strength (A, B, C, M, X)
+                    let classificationColor = 'text-green-400';
+                    if (classification.startsWith('C')) classificationColor = 'text-yellow-400';
+                    if (classification.startsWith('M')) classificationColor = 'text-orange-400';
+                    if (classification.startsWith('X')) classificationColor = 'text-red-500';
+
+                    container.innerHTML = `
+                        <h2 class="text-2xl font-semibold mb-4 text-yellow-400 flex items-center">
+                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            Latest Solar Flare Report (Last 24 Hours)
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
+                            <div>
+                                <p class="text-gray-400">Classification:</p>
+                                <p class="font-bold ${classificationColor} text-3xl">${classification}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400">Peak Time (UTC):</p>
+                                <p class="font-bold text-white">${peakTime}</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <p class="text-gray-400">Source Region:</p>
+                                <p class="font-bold text-white">${latestFlare.activeRegionNum ? `AR${latestFlare.activeRegionNum}` : 'N/A'}</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-4">A higher classification (X > M > C > B > A) indicates a stronger flare.</p>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <h2 class="text-2xl font-semibold mb-4 text-yellow-400 flex items-center">
+                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            Latest Solar Flare Report (Last 24 Hours)
+                        </h2>
+                        <p class="text-lg text-green-400 font-semibold text-center mt-6">No significant solar flares detected in the last 24 hours. The sun is calm.</p>
+                    `;
+                }
+
+            } catch (error) {
+                console.error('Error fetching Solar Flare data:', error);
+                container.innerHTML = `
+                    <h2 class="text-2xl font-semibold mb-4 text-yellow-400 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        Latest Solar Flare Report
+                    </h2>
+                    <p class="text-red-400 text-center mt-6">Failed to load space weather data.</p>
+                `;
+            }
+        }
+
+
+        // --- Router Logic (Updated) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const views = document.querySelectorAll('.view');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            function updateNavLinks(activeHash) {
+                navLinks.forEach(link => {
+                    const linkHash = link.getAttribute('href');
+                    const isActive = linkHash === activeHash || (activeHash.startsWith('#story/') && linkHash === '#stories');
+                    if (isActive) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            function router() {
+                const hash = window.location.hash || '#home';
+                let storyId = null;
+
+                if (hash.startsWith('#story/')) {
+                    storyId = parseInt(hash.substring(7), 10);
+                }
+
+                views.forEach(view => view.classList.remove('active-view'));
+
+                let activeViewId;
+                if (storyId) {
+                    activeViewId = 'story-detail-view';
+                    renderStoryDetail(storyId);
+                } else {
+                    activeViewId = hash.substring(1) + '-view';
+                }
+
+                const activeView = document.getElementById(activeViewId);
+                if (activeView) {
+                    activeView.classList.add('active-view');
+
+                    // NEW: Load data when 'data-view' is active
+                    if (activeViewId === 'data-view') {
+                        fetchAPOD();
+                        fetchLatestFlare();
+                    }
+                } else {
+                    document.getElementById('home-view').classList.add('active-view');
+                }
+
+                if (hash === '#stories') {
+                    renderStoriesGrid();
+                }
+
+                updateNavLinks(hash);
+                window.scrollTo(0, 0);
+            }
+
+            function renderStoriesGrid() {
+                const container = document.getElementById('stories-grid-container');
+                container.innerHTML = '';
+                storiesData.forEach(story => {
+                    const card = `
+                        <a href="#story/${story.id}" class="block bg-gray-800 rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+                            <img src="${story.imagePaths[0]}" alt="${story.title}" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold mb-2 text-white">${story.title}</h3>
+                                <p class="text-gray-400">${story.excerpt}</p>
+                            </div>
+                        </a>
+                    `;
+                    container.innerHTML += card;
+                });
+            }
+
+            function renderStoryDetail(storyId) {
+                const story = storiesData.find(s => s.id === storyId);
+                const contentContainer = document.getElementById('story-detail-content');
+                const navContainer = document.getElementById('story-navigation');
+
+                if (!story) {
+                    contentContainer.innerHTML = `<h1 class="text-3xl text-center font-bold">Story Not Found</h1>`;
+                    navContainer.innerHTML = '';
+                    return;
+                }
+
+                let contentHtml = `<h1 class="text-3xl md:text-4xl text-center font-bold mb-6 text-white">${story.title}</h1>`;
+                contentHtml += story.content.map(p => `<p class="text-lg text-gray-300 mb-4 leading-relaxed">${p}</p>`).join('');
+
+                // Note: The loop below iterates over all images in the imagePaths array.
+                const imagesHtml = story.imagePaths.map(path =>
+                    `<img src="${path}" alt="${story.title}" class="rounded-lg shadow-md my-6 mx-auto w-full max-w-lg h-auto">`
+                ).join('');
+
+                contentHtml += `<div class="flex flex-col items-center gap-4">${imagesHtml}</div>`;
+                contentHtml += `<p class="text-sm text-gray-500 mt-8 italic">${story.credits}</p>`;
+                contentContainer.innerHTML = contentHtml;
+
+                const currentIndex = storiesData.findIndex(s => s.id === storyId);
+                const prevStory = currentIndex > 0 ? storiesData[currentIndex - 1] : null;
+                const nextStory = currentIndex < storiesData.length - 1 ? storiesData[currentIndex + 1] : null;
+
+                let navHtml = '';
+                if (prevStory) {
+                    navHtml += `<a href="#story/${prevStory.id}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full transition-colors">&larr; Previous</a>`;
+                } else {
+                    navHtml += `<span class="opacity-50 cursor-not-allowed bg-gray-600 text-white font-bold py-2 px-6 rounded-full">&larr; Previous</span>`;
+                }
+
+                navHtml += `<a href="#stories" class="text-blue-400 hover:text-blue-300 font-bold transition-colors">Back to Stories</a>`
+
+                if (nextStory) {
+                    navHtml += `<a href="#story/${nextStory.id}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full transition-colors">Next &rarr;</a>`;
+                } else {
+                    navHtml += `<span class="opacity-50 cursor-not-allowed bg-gray-600 text-white font-bold py-2 px-6 rounded-full">Next &rarr;</span>`;
+                }
+                navContainer.innerHTML = navHtml;
+            }
+
+            window.addEventListener('hashchange', router);
+            router();
+        });
+        //funfacts
+        const funFacts = [
+            "💡 Solar flares can reach temperatures of over 10 million °C!",
+            "💡 The auroras on Earth are caused by solar wind interacting with our magnetic field.",
+            "💡 GPS satellites can be temporarily disrupted by solar storms.",
+            "💡 The Sun emits more energy in one second than humans have used in all of history.",
+            "💡 A solar storm in 1859, called the Carrington Event, caused telegraph systems to fail worldwide!"
+        ];
+
+        let currentFactIndex = 0;
+
+        const factText = document.getElementById('fun-fact-text');
+        const factBtn = document.getElementById('show-fact-btn');
+
+        factBtn.addEventListener('click', () => {
+            factText.textContent = funFacts[currentFactIndex];
+            currentFactIndex = (currentFactIndex + 1) % funFacts.length; // loop back to first fact
+        });
+
+    </script>
+</body>
+
+</html>
